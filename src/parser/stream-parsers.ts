@@ -101,7 +101,11 @@ export class StreamParser {
 
 		if (value === Section.EOF) {
 			const scriptProperties = this._ass.properties;
-			if (scriptProperties.resolutionX === undefined || scriptProperties.resolutionY === undefined) {
+			if (scriptProperties.resolutionX !== undefined && scriptProperties.resolutionY === undefined) {
+				scriptProperties.resolutionY = Math.floor(scriptProperties.resolutionX / 16 * 9);
+			} else if(scriptProperties.resolutionX === undefined && scriptProperties.resolutionY !== undefined) {
+				scriptProperties.resolutionX = Math.floor(scriptProperties.resolutionY / 9 * 16);
+			} else if (scriptProperties.resolutionX === undefined && scriptProperties.resolutionY === undefined) {
 				// Malformed script.
 				this._minimalDeferred.reject("Malformed ASS script.");
 				this._deferred.reject("Malformed ASS script.");
